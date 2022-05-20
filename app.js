@@ -98,14 +98,8 @@ pad.addEventListener("click", (e) => {
     operator = "+";
     op.textContent = "+";
     dotDone = false;
-    if (
-      (firstNum || firstNum === 0) &&
-      (entry.textContent || entry.textContent === 0)
-    ) {
-      result.textContent = firstNum = +entry.textContent;
-      display();
-      entry.textContent = "";
-    } else if (isFirstNum && !isSecondNum) {
+
+    if (isFirstNum && !isSecondNum) {
       firstNum = +entry.textContent;
       entry.textContent = "";
       result.textContent = firstNum;
@@ -123,14 +117,7 @@ pad.addEventListener("click", (e) => {
     operator = "-";
     op.textContent = "-";
     dotDone = false;
-    if (
-      (firstNum || firstNum === 0) &&
-      (entry.textContent || entry.textContent === 0)
-    ) {
-      result.textContent = firstNum = +entry.textContent;
-      entry.textContent = "";
-      display();
-    } else if (isFirstNum && !isSecondNum) {
+    if (isFirstNum && !isSecondNum) {
       operator = "-";
       firstNum = +entry.textContent;
       entry.textContent = "";
@@ -149,14 +136,7 @@ pad.addEventListener("click", (e) => {
     operator = "*";
     op.textContent = "x";
     dotDone = false;
-    if (
-      (firstNum || firstNum === 0) &&
-      (entry.textContent || entry.textContent === 0)
-    ) {
-      result.textContent = firstNum = +entry.textContent;
-      entry.textContent = "";
-      display();
-    } else if (isFirstNum && !isSecondNum) {
+    if (isFirstNum && !isSecondNum) {
       operator = "*";
       firstNum = +entry.textContent;
       entry.textContent = "";
@@ -175,14 +155,7 @@ pad.addEventListener("click", (e) => {
     operator = "/";
     op.textContent = "÷";
     dotDone = false;
-    if (
-      (firstNum || firstNum === 0) &&
-      (entry.textContent || entry.textContent === 0)
-    ) {
-      result.textContent = firstNum = +entry.textContent;
-      entry.textContent = "";
-      display();
-    } else if (isFirstNum && !isSecondNum) {
+    if (isFirstNum && !isSecondNum) {
       operator = "/";
       firstNum = +entry.textContent;
       entry.textContent = "";
@@ -220,7 +193,6 @@ pad.addEventListener("click", (e) => {
   }
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
-    console.log("clicked");
     entry.textContent
       ? (entry.textContent = -1 * +entry.textContent)
       : result.textContent
@@ -230,7 +202,11 @@ pad.addEventListener("click", (e) => {
 
   //* modulus
   else if (e.target.classList.contains("main__buttons--3")) {
-    console.log("clicked");
+    entry.textContent
+      ? (entry.textContent = 0.01 * +entry.textContent)
+      : result.textContent
+      ? (result.textContent = 0.01 * +result.textContent)
+      : result;
   }
 });
 setDefaults();

@@ -19,22 +19,23 @@
   color: whitesmoke;
 }
 .main__screen {
-  min-height: 8.4rem;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
+  /* min-height: 8.4rem; */
+  padding: 1rem;
+  padding-top: 0;
 }
 .main__screen__input {
   display: flex;
   justify-content: flex-end;
   width: 100%;
   font-size: 3rem;
-  position: relative;
+  min-height: 4.2rem;
+  /* position: relative; */
 }
 .main__screen__output {
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  min-height: 4.2rem;
   font-size: 3rem;
 }
 .main__screen__output--result {
@@ -62,6 +63,9 @@
   background-color: #333333;
   color: whitesmoke;
 }
+.main__buttons--btn:hover {
+  opacity: 0.6;
+}
 .main__buttons--1,
 .main__buttons--2,
 .main__buttons--3 {
@@ -81,6 +85,9 @@
   text-align: left;
   text-indent: 1.5rem;
 }
-.hidden {
+/* .hidden {
   display: none;
+} */
+.opacity {
+  opacity: 0.6;
 }
