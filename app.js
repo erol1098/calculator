@@ -27,7 +27,13 @@ const entry = document.querySelector(".main__screen__input--entry");
 const result = document.querySelector(".main__screen__output--result");
 const op = document.querySelector(".main__screen__input--op");
 
-let firstNum, secondNum, isFirstNum, isSecondNum, operator, dotDone;
+let firstNum,
+  secondNum,
+  isFirstNum,
+  isSecondNum,
+  operator,
+  dotDone,
+  isOpSelected;
 const checkLength = function () {
   if (entry.textContent.length > 10) {
     entry.textContent = entry.textContent.slice(0, 10);
@@ -45,6 +51,7 @@ const setDefaults = function () {
   isFirstNum = false;
   isSecondNum = false;
   operator = "";
+  isOpSelected = false;
   dotDone = false;
   entry.textContent = "";
   result.textContent = "";
@@ -52,12 +59,26 @@ const setDefaults = function () {
   document.querySelector(".main__screen__input").classList.remove("hidden");
 };
 
-const takeFirstNumber = function () {
+const takeFirstNumber = function (op) {
   if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
     firstNum = +entry.textContent;
     entry.textContent = "";
     result.textContent = firstNum;
     isFirstNum = true;
+    isOpSelected = false;
+  }
+  selectedOp(op);
+};
+
+const selectedOp = function (op) {
+  if (!isOpSelected) {
+    btnPlus.classList.remove("selected");
+    btnMinus.classList.remove("selected");
+    btnMultiply.classList.remove("selected");
+    btnDivide.classList.remove("selected");
+    if (!op.classList.contains("main__buttons--19")) {
+      op.classList.add("selected");
+    }
   }
 };
 
@@ -100,9 +121,28 @@ pad.addEventListener("click", (e) => {
   else if (e.target.classList.contains("main__buttons--16")) {
     operator = "+";
     dotDone = false;
-    takeFirstNumber();
-    //* Eşittir
-  } else if (e.target.classList.contains("main__buttons--19")) {
+    takeFirstNumber(e.target);
+  }
+  //* Çıkarma
+  else if (e.target.classList.contains("main__buttons--12")) {
+    operator = "-";
+    dotDone = false;
+    takeFirstNumber(e.target);
+  }
+  //* Çarpma
+  else if (e.target.classList.contains("main__buttons--8")) {
+    operator = "*";
+    dotDone = false;
+    takeFirstNumber(e.target);
+  }
+  //* Bölme
+  else if (e.target.classList.contains("main__buttons--4")) {
+    operator = "/";
+    dotDone = false;
+    takeFirstNumber(e.target);
+  }
+  //* Eşittir
+  else if (e.target.classList.contains("main__buttons--19")) {
     if (isFirstNum && !isSecondNum) {
       entry.textContent === 0 || entry.textContent
         ? (secondNum = +entry.textContent)
@@ -122,25 +162,10 @@ pad.addEventListener("click", (e) => {
       secondNum = "";
       isFirstNum = false;
       isSecondNum = false;
+      display();
+      selectedOp(e.target);
+      isOpSelected = true;
     }
-  }
-  //* Çıkarma
-  else if (e.target.classList.contains("main__buttons--12")) {
-    operator = "-";
-    dotDone = false;
-    takeFirstNumber();
-  }
-  //* Çarpma
-  else if (e.target.classList.contains("main__buttons--8")) {
-    operator = "*";
-    dotDone = false;
-    takeFirstNumber();
-  }
-  //* Bölme
-  else if (e.target.classList.contains("main__buttons--4")) {
-    operator = "/";
-    dotDone = false;
-    takeFirstNumber();
   }
   //* Clear
   else if (e.target.classList.contains("main__buttons--1")) {
@@ -148,20 +173,22 @@ pad.addEventListener("click", (e) => {
   }
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
-    entry.textContent
-      ? (entry.textContent = -1 * +entry.textContent)
-      : result.textContent
-      ? (result.textContent = -1 * +result.textContent)
-      : result;
+    // entry.textContent
+    //   ? (entry.textContent = -1 * +entry.textContent)
+    //   : result.textContent
+    //   ? (result.textContent = -1 * +result.textContent)
+    //   : result;
+    entry.textContent && (entry.textContent = -1 * +entry.textContent);
   }
 
   //* modulus
   else if (e.target.classList.contains("main__buttons--3")) {
-    entry.textContent
-      ? (entry.textContent = 0.01 * +entry.textContent)
-      : result.textContent
-      ? (result.textContent = 0.01 * +result.textContent)
-      : result;
+    // entry.textContent
+    //   ? (entry.textContent = 0.01 * +entry.textContent)
+    //   : result.textContent
+    //   ? (result.textContent = 0.01 * +result.textContent)
+    //   : result;
+    entry.textContent && (entry.textContent = +entry.textContent * 0.01);
   }
 });
 setDefaults();

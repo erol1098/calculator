@@ -29,7 +29,7 @@
   width: 100%;
   font-size: 3rem;
   min-height: 4.2rem;
-  /* position: relative; */
+  position: relative;
 }
 .main__screen__output {
   display: flex;
@@ -85,9 +85,11 @@
   text-align: left;
   text-indent: 1.5rem;
 }
-/* .hidden {
-  display: none;
-} */
-.opacity {
-  opacity: 0.6;
+.hidden {
+  /* display: none; */
+  display: block;
+}
+.selected {
+  background-color: #fff;
+  color: #f1a33c;
 }
