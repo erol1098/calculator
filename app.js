@@ -1,5 +1,6 @@
 "use strict";
 
+console.log(Math.log1p(999999999999));
 const pad = document.querySelector(".main__buttons");
 
 const btn1 = document.querySelector(".main__buttons--13");
@@ -33,10 +34,11 @@ let firstNum,
   isSecondNum,
   operator,
   dotDone,
-  isOpSelected;
+  isOpSelected,
+  equalPressed;
 const checkLength = function () {
-  if (entry.textContent.length > 10) {
-    entry.textContent = entry.textContent.slice(0, 10);
+  if (entry.textContent.length > 9) {
+    entry.textContent = entry.textContent.slice(0, 9);
   }
   document.querySelector(".main__screen__output").classList.add("hidden");
   document.querySelector(".main__screen__input").classList.remove("hidden");
@@ -55,6 +57,8 @@ const setDefaults = function () {
   dotDone = false;
   entry.textContent = "";
   result.textContent = "";
+  sign.textContent = "";
+  equalPressed = false;
   document.querySelector(".main__screen__output").classList.add("hidden");
   document.querySelector(".main__screen__input").classList.remove("hidden");
 };
@@ -63,7 +67,7 @@ const takeFirstNumber = function (op) {
   if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
     firstNum = +entry.textContent;
     entry.textContent = "";
-    result.textContent = firstNum;
+    result.textContent = checkResult(firstNum);
     isFirstNum = true;
     isOpSelected = false;
   }
@@ -84,38 +88,60 @@ const selectedOp = function (op) {
   }
 };
 
+const checkEqual = function () {
+  if (equalPressed) {
+    entry.textContent = "";
+    equalPressed = false;
+  }
+};
+
+const checkResult = function (number) {
+  return number > 999999999 ? number.toExponential(4) : number;
+};
+
 pad.addEventListener("click", (e) => {
   if (e.target.classList.contains("main__buttons--13")) {
+    checkEqual();
     entry.textContent += "1";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--14")) {
+    checkEqual();
     entry.textContent += "2";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--15")) {
+    checkEqual();
     entry.textContent += "3";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--9")) {
+    checkEqual();
     entry.textContent += "4";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--10")) {
+    checkEqual();
     entry.textContent += "5";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--11")) {
+    checkEqual();
     entry.textContent += "6";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--5")) {
+    checkEqual();
     entry.textContent += "7";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--6")) {
+    checkEqual();
     entry.textContent += "8";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--7")) {
+    checkEqual();
     entry.textContent += "9";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--17")) {
+    checkEqual();
     entry.textContent += "0";
     checkLength();
   } else if (e.target.classList.contains("main__buttons--18")) {
+    checkEqual();
     !dotDone ? (entry.textContent += ".") : dotDone;
     dotDone = true;
   }
@@ -123,24 +149,28 @@ pad.addEventListener("click", (e) => {
   else if (e.target.classList.contains("main__buttons--16")) {
     operator = "+";
     dotDone = false;
+    equalPressed = false;
     takeFirstNumber(e.target);
   }
   //* Çıkarma
   else if (e.target.classList.contains("main__buttons--12")) {
     operator = "-";
     dotDone = false;
+    equalPressed = false;
     takeFirstNumber(e.target);
   }
   //* Çarpma
   else if (e.target.classList.contains("main__buttons--8")) {
     operator = "*";
     dotDone = false;
+    equalPressed = false;
     takeFirstNumber(e.target);
   }
   //* Bölme
   else if (e.target.classList.contains("main__buttons--4")) {
     operator = "÷";
     dotDone = false;
+    equalPressed = false;
     takeFirstNumber(e.target);
   }
   //* Eşittir
@@ -153,16 +183,17 @@ pad.addEventListener("click", (e) => {
       dotDone = false;
 
       if (operator === "+") {
-        entry.textContent = firstNum = firstNum + secondNum;
+        firstNum = firstNum + secondNum;
+        entry.textContent = checkResult(firstNum);
       } else if (operator === "-") {
-        entry.textContent = firstNum = firstNum - secondNum;
+        firstNum = firstNum - secondNum;
+        entry.textContent = checkResult(firstNum);
       } else if (operator === "*") {
-        entry.textContent = firstNum =
-          firstNum * secondNum > 999999999
-            ? Math.exp(firstNum * secondNum)
-            : firstNum * secondNum;
+        firstNum = firstNum * secondNum;
+        entry.textContent = checkResult(firstNum);
       } else if (operator === "÷") {
-        entry.textContent = firstNum = firstNum / secondNum;
+        firstNum = firstNum / secondNum;
+        entry.textContent = checkResult(firstNum);
       }
       secondNum = "";
       isFirstNum = false;
@@ -172,6 +203,7 @@ pad.addEventListener("click", (e) => {
       isOpSelected = true;
       sign.textContent = "";
       result.textContent = "";
+      equalPressed = true;
     }
   }
   //* Clear
