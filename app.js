@@ -27,12 +27,7 @@ const entry = document.querySelector(".main__screen__input--entry");
 const result = document.querySelector(".main__screen__output--result");
 const op = document.querySelector(".main__screen__input--op");
 
-let firstNum = 0;
-let secondNum = 0;
-let isFirstNum = true;
-let isSecondNum = false;
-let operator = "";
-let dotDone = false;
+let firstNum, secondNum, isFirstNum, isSecondNum, operator, dotDone;
 const checkLength = function () {
   if (entry.textContent.length > 10) {
     entry.textContent = entry.textContent.slice(0, 10);
@@ -45,17 +40,25 @@ const display = function () {
   document.querySelector(".main__screen__input").classList.add("hidden");
 };
 const setDefaults = function () {
-  firstNum = 0;
-  secondNum = 0;
+  firstNum = "";
+  secondNum = "";
+  isFirstNum = false;
+  isSecondNum = false;
   operator = "";
+  dotDone = false;
   entry.textContent = "";
   result.textContent = "";
-  op.textContent = "";
-  isFirstNum = true;
-  isSecondNum = false;
-  dotDone = false;
   document.querySelector(".main__screen__output").classList.add("hidden");
   document.querySelector(".main__screen__input").classList.remove("hidden");
+};
+
+const takeFirstNumber = function () {
+  if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
+    firstNum = +entry.textContent;
+    entry.textContent = "";
+    result.textContent = firstNum;
+    isFirstNum = true;
+  }
 };
 
 pad.addEventListener("click", (e) => {
@@ -96,96 +99,48 @@ pad.addEventListener("click", (e) => {
   //* toplama
   else if (e.target.classList.contains("main__buttons--16")) {
     operator = "+";
-    op.textContent = "+";
     dotDone = false;
-
+    takeFirstNumber();
+    //* Eşittir
+  } else if (e.target.classList.contains("main__buttons--19")) {
     if (isFirstNum && !isSecondNum) {
-      firstNum = +entry.textContent;
+      entry.textContent === 0 || entry.textContent
+        ? (secondNum = +entry.textContent)
+        : secondNum;
       entry.textContent = "";
-      result.textContent = firstNum;
-      isFirstNum = false;
-      isSecondNum = true;
-    } else if (!isFirstNum && isSecondNum) {
-      secondNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum = firstNum + secondNum;
-      display();
-    }
+      dotDone = false;
 
-    //* Çıkarma
-  } else if (e.target.classList.contains("main__buttons--12")) {
+      if (operator === "+") {
+        result.textContent = firstNum = firstNum + secondNum;
+      } else if (operator === "-") {
+        result.textContent = firstNum = firstNum - secondNum;
+      } else if (operator === "*") {
+        result.textContent = firstNum = firstNum * secondNum;
+      } else if (operator === "/") {
+        result.textContent = firstNum = firstNum / secondNum;
+      }
+      secondNum = "";
+      isFirstNum = false;
+      isSecondNum = false;
+    }
+  }
+  //* Çıkarma
+  else if (e.target.classList.contains("main__buttons--12")) {
     operator = "-";
-    op.textContent = "-";
     dotDone = false;
-    if (isFirstNum && !isSecondNum) {
-      operator = "-";
-      firstNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum;
-      isFirstNum = false;
-      isSecondNum = true;
-    } else if (!isFirstNum && isSecondNum) {
-      secondNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum = firstNum - secondNum;
-      display();
-    }
+    takeFirstNumber();
   }
   //* Çarpma
   else if (e.target.classList.contains("main__buttons--8")) {
     operator = "*";
-    op.textContent = "x";
     dotDone = false;
-    if (isFirstNum && !isSecondNum) {
-      operator = "*";
-      firstNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum;
-      isFirstNum = false;
-      isSecondNum = true;
-    } else if (!isFirstNum && isSecondNum) {
-      secondNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum = firstNum * (secondNum ? secondNum : 1);
-      display();
-    }
+    takeFirstNumber();
   }
   //* Bölme
   else if (e.target.classList.contains("main__buttons--4")) {
     operator = "/";
-    op.textContent = "÷";
     dotDone = false;
-    if (isFirstNum && !isSecondNum) {
-      operator = "/";
-      firstNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum;
-      isFirstNum = false;
-      isSecondNum = true;
-    } else if (!isFirstNum && isSecondNum) {
-      secondNum = +entry.textContent;
-      entry.textContent = "";
-      result.textContent = firstNum = firstNum / (secondNum ? secondNum : 1);
-      display();
-    }
-
-    //* Eşittir
-  } else if (e.target.classList.contains("main__buttons--19")) {
-    entry.textContent === 0 || entry.textContent
-      ? (secondNum = +entry.textContent)
-      : secondNum;
-    entry.textContent = "";
-    dotDone = false;
-    if (operator === "+") {
-      result.textContent = firstNum = firstNum + secondNum;
-    } else if (operator === "-") {
-      result.textContent = firstNum = firstNum - secondNum;
-    } else if (operator === "*") {
-      result.textContent = firstNum = firstNum * secondNum;
-    } else if (operator === "/") {
-      result.textContent = firstNum = firstNum / secondNum;
-    }
-    display();
+    takeFirstNumber();
   }
   //* Clear
   else if (e.target.classList.contains("main__buttons--1")) {
