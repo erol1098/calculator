@@ -25,7 +25,7 @@ const btnModulus = document.querySelector(".main__buttons--3");
 
 const entry = document.querySelector(".main__screen__input--entry");
 const result = document.querySelector(".main__screen__output--result");
-const op = document.querySelector(".main__screen__input--op");
+const sign = document.querySelector(".main__screen__input--op");
 
 let firstNum,
   secondNum,
@@ -76,6 +76,8 @@ const selectedOp = function (op) {
     btnMinus.classList.remove("selected");
     btnMultiply.classList.remove("selected");
     btnDivide.classList.remove("selected");
+    sign.textContent = operator;
+    console.log(operator);
     if (!op.classList.contains("main__buttons--19")) {
       op.classList.add("selected");
     }
@@ -137,7 +139,7 @@ pad.addEventListener("click", (e) => {
   }
   //* Bölme
   else if (e.target.classList.contains("main__buttons--4")) {
-    operator = "/";
+    operator = "÷";
     dotDone = false;
     takeFirstNumber(e.target);
   }
@@ -151,13 +153,16 @@ pad.addEventListener("click", (e) => {
       dotDone = false;
 
       if (operator === "+") {
-        result.textContent = firstNum = firstNum + secondNum;
+        entry.textContent = firstNum = firstNum + secondNum;
       } else if (operator === "-") {
-        result.textContent = firstNum = firstNum - secondNum;
+        entry.textContent = firstNum = firstNum - secondNum;
       } else if (operator === "*") {
-        result.textContent = firstNum = firstNum * secondNum;
-      } else if (operator === "/") {
-        result.textContent = firstNum = firstNum / secondNum;
+        entry.textContent = firstNum =
+          firstNum * secondNum > 999999999
+            ? Math.exp(firstNum * secondNum)
+            : firstNum * secondNum;
+      } else if (operator === "÷") {
+        entry.textContent = firstNum = firstNum / secondNum;
       }
       secondNum = "";
       isFirstNum = false;
@@ -165,6 +170,8 @@ pad.addEventListener("click", (e) => {
       display();
       selectedOp(e.target);
       isOpSelected = true;
+      sign.textContent = "";
+      result.textContent = "";
     }
   }
   //* Clear
