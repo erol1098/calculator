@@ -1,4 +1,5 @@
 "use strict";
+console.log(Number(1e-18));
 //* Buttons
 const pad = document.querySelector(".main__buttons");
 const btnPlus = document.querySelector(".main__buttons--16");
@@ -17,26 +18,29 @@ const sign = document.querySelector(".main__screen__input--op");
 //* Variables
 let firstNum,
   secondNum,
+  realNumber,
   isFirstNum,
   isSecondNum,
   operator,
   dotDone,
   isOpSelected,
   equalPressed;
+let haveReal = false;
 
 //* Setting Program Defaults and AC Button
 const setDefaults = function () {
   firstNum = "";
   secondNum = "";
+  realNumber = "";
   isFirstNum = false;
   isSecondNum = false;
   operator = "";
-  isOpSelected = false;
   dotDone = false;
-  entry.textContent = "";
+  isOpSelected = false;
+  equalPressed = false;
+  entry.textContent = 0;
   result.textContent = "";
   sign.textContent = "";
-  equalPressed = false;
   btnPlus.classList.remove("selected");
   btnMinus.classList.remove("selected");
   btnMultiply.classList.remove("selected");
@@ -61,17 +65,14 @@ const checkLength = function () {
 
 //* Take First Number
 const takeFirstNumber = function (op) {
-  if (
-    !isFirstNum &&
-    !isSecondNum &&
-    entry.textContent !== "" &&
-    entry.textContent !== "0."
-  ) {
+  if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
     firstNum = +entry.textContent;
     entry.textContent = "";
     result.textContent = checkResult(firstNum);
     isFirstNum = true;
     isOpSelected = false;
+    btnClear.style.display = "none";
+    btnAllClear.style.display = "block";
   }
   selectedOp(op);
 };
@@ -112,13 +113,13 @@ const checkZero = function () {
 //* Check Result's Length and Implement Exponential If Required
 const checkResult = function (number) {
   let output;
-  number > 999999999
+  number === 0
+    ? (output = number)
+    : number > 999999999
     ? (output = number.toExponential(4))
     : number < 0.00000001
     ? (output = number.toExponential(4))
-    : number.toString().length > 9
-    ? (output = number.toString().substring(0, 9))
-    : (output = +number.toString());
+    : (output = Number(number.toString()).toPrecision(9).substring(0, 9));
   return output;
 };
 
@@ -250,7 +251,7 @@ pad.addEventListener("click", (e) => {
   //* C Clear
   else if (e.target.classList.contains("main__buttons--100")) {
     if (entry.textContent || entry.textContent === "0") {
-      entry.textContent = "";
+      entry.textContent = "0";
       e.target.style.display = "none";
       btnAllClear.style.display = "block";
       dotDone = false;
