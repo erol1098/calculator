@@ -118,8 +118,7 @@ const checkResult = function (number) {
     ? (output = number.toExponential(4))
     : number.toString().length > 9
     ? (output = number.toString().substring(0, 9))
-    : (output = number);
-
+    : (output = +number.toString());
   return output;
 };
 
@@ -193,7 +192,11 @@ pad.addEventListener("click", (e) => {
     checkLength();
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
-    !dotDone ? (entry.textContent += "0.") : dotDone;
+    !dotDone
+      ? entry.textContent === ""
+        ? (entry.textContent = "0.")
+        : (entry.textContent += ".")
+      : dotDone;
     checkLength();
     dotDone = true;
   }
