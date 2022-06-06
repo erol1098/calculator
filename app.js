@@ -1,7 +1,6 @@
 "use strict";
-
+//* Buttons
 const pad = document.querySelector(".main__buttons");
-
 const btn1 = document.querySelector(".main__buttons--13");
 const btn2 = document.querySelector(".main__buttons--14");
 const btn3 = document.querySelector(".main__buttons--15");
@@ -12,21 +11,21 @@ const btn7 = document.querySelector(".main__buttons--5");
 const btn8 = document.querySelector(".main__buttons--6");
 const btn9 = document.querySelector(".main__buttons--7");
 const btn0 = document.querySelector(".main__buttons--17");
-
 const btnPlus = document.querySelector(".main__buttons--16");
 const btnMinus = document.querySelector(".main__buttons--12");
 const btnMultiply = document.querySelector(".main__buttons--8");
 const btnDivide = document.querySelector(".main__buttons--4");
 const btnEqual = document.querySelector(".main__buttons--19");
-
 const btnClear = document.querySelector(".main__buttons--1");
 const btnNegative = document.querySelector(".main__buttons--2");
 const btnModulus = document.querySelector(".main__buttons--3");
 
+//* Screen
 const entry = document.querySelector(".main__screen__input--entry");
 const result = document.querySelector(".main__screen__output--result");
 const sign = document.querySelector(".main__screen__input--op");
 
+//* Variables
 let firstNum,
   secondNum,
   isFirstNum,
@@ -35,25 +34,8 @@ let firstNum,
   dotDone,
   isOpSelected,
   equalPressed;
-const checkLength = function () {
-  let check;
 
-  entry.textContent[-1] === "."
-    ? (check = 9)
-      ? [...entry.textContent].includes(".")
-      : (check = 10)
-    : (check = 9);
-
-  if (entry.textContent.length > check) {
-    entry.textContent = entry.textContent.slice(0, `${check}`);
-  }
-  // document.querySelector(".main__screen__output").classList.add("hidden");
-  // document.querySelector(".main__screen__input").classList.remove("hidden");
-};
-const display = function () {
-  // document.querySelector(".main__screen__output").classList.remove("hidden");
-  // document.querySelector(".main__screen__input").classList.add("hidden");
-};
+//* Setting Program Defaults and AC Button
 const setDefaults = function () {
   firstNum = "";
   secondNum = "";
@@ -66,10 +48,27 @@ const setDefaults = function () {
   result.textContent = "";
   sign.textContent = "";
   equalPressed = false;
-  // document.querySelector(".main__screen__output").classList.add("hidden");
-  // document.querySelector(".main__screen__input").classList.remove("hidden");
+  btnPlus.classList.remove("selected");
+  btnMinus.classList.remove("selected");
+  btnMultiply.classList.remove("selected");
+  btnDivide.classList.remove("selected");
 };
 
+//* Restrict the Length of User Input
+const checkLength = function () {
+  let check;
+  entry.textContent[-1] === "."
+    ? (check = 9)
+      ? [...entry.textContent].includes(".")
+      : (check = 10)
+    : (check = 9);
+
+  if (entry.textContent.length > check) {
+    entry.textContent = entry.textContent.slice(0, `${check}`);
+  }
+};
+
+//* Take First Number
 const takeFirstNumber = function (op) {
   if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
     firstNum = +entry.textContent;
@@ -81,6 +80,7 @@ const takeFirstNumber = function (op) {
   selectedOp(op);
 };
 
+//* Select Operator
 const selectedOp = function (op) {
   if (!isOpSelected) {
     btnPlus.classList.remove("selected");
@@ -94,13 +94,24 @@ const selectedOp = function (op) {
   }
 };
 
+//* Check If Equal Button Pressed
 const checkEqual = function () {
   if (equalPressed) {
     entry.textContent = "";
     equalPressed = false;
   }
+  checkZero();
 };
 
+//* Check If Input Begins with Zero
+const checkZero = function () {
+  entry.textContent.charAt(0) === "0" &&
+  entry.textContent.substring(0, 2) !== "0."
+    ? (entry.textContent = entry.textContent.substring(1))
+    : null;
+};
+
+//* Check Result's Length and Implement Exponential If Required
 const checkResult = function (number) {
   let output;
   number > 999999999
@@ -108,10 +119,37 @@ const checkResult = function (number) {
     : number < 0.00000001
     ? (output = number.toExponential(4))
     : number.toString().length > 9
-    ? (output = [...number.toString()].slice(0, 9).join(""))
+    ? (output = number.toString().substring(0, 9))
     : (output = number);
 
   return output;
+};
+
+//* Do When a Calculus Operand is Pressed
+const calculusOp = function (target, operand) {
+  if (entry.textContent) {
+    dotDone = false;
+    equalPressed = false;
+    operator = operand;
+    takeFirstNumber(target);
+  }
+};
+
+//* Calculation
+const calculate = function () {
+  if (operator === "+") {
+    firstNum = firstNum + secondNum;
+    entry.textContent = checkResult(firstNum);
+  } else if (operator === "-") {
+    firstNum = firstNum - secondNum;
+    entry.textContent = checkResult(firstNum);
+  } else if (operator === "*") {
+    firstNum = firstNum * secondNum;
+    entry.textContent = checkResult(firstNum);
+  } else if (operator === "÷") {
+    firstNum = firstNum / secondNum;
+    entry.textContent = checkResult(firstNum);
+  }
 };
 
 pad.addEventListener("click", (e) => {
@@ -153,7 +191,7 @@ pad.addEventListener("click", (e) => {
     checkLength();
   } else if (e.target.classList.contains("main__buttons--17")) {
     checkEqual();
-    entry.textContent += "0";
+    entry.textContent !== "0" ? (entry.textContent += "0") : entry.textContent;
     checkLength();
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
@@ -161,35 +199,23 @@ pad.addEventListener("click", (e) => {
     checkLength();
     dotDone = true;
   }
-  //* toplama
+  //* Addition
   else if (e.target.classList.contains("main__buttons--16")) {
-    operator = "+";
-    dotDone = false;
-    equalPressed = false;
-    takeFirstNumber(e.target);
+    calculusOp(e.target, "+");
   }
-  //* Çıkarma
+  //* Substraction
   else if (e.target.classList.contains("main__buttons--12")) {
-    operator = "-";
-    dotDone = false;
-    equalPressed = false;
-    takeFirstNumber(e.target);
+    calculusOp(e.target, "-");
   }
-  //* Çarpma
+  //* Multiplication
   else if (e.target.classList.contains("main__buttons--8")) {
-    operator = "*";
-    dotDone = false;
-    equalPressed = false;
-    takeFirstNumber(e.target);
+    calculusOp(e.target, "*");
   }
-  //* Bölme
+  //* Division
   else if (e.target.classList.contains("main__buttons--4")) {
-    operator = "÷";
-    dotDone = false;
-    equalPressed = false;
-    takeFirstNumber(e.target);
+    calculusOp(e.target, "÷");
   }
-  //* Eşittir
+  //* Equal
   else if (e.target.classList.contains("main__buttons--19")) {
     if (isFirstNum && !isSecondNum) {
       entry.textContent === 0 || entry.textContent
@@ -205,24 +231,10 @@ pad.addEventListener("click", (e) => {
         : secondNum;
       entry.textContent = "";
       dotDone = false;
-
-      if (operator === "+") {
-        firstNum = firstNum + secondNum;
-        entry.textContent = checkResult(firstNum);
-      } else if (operator === "-") {
-        firstNum = firstNum - secondNum;
-        entry.textContent = checkResult(firstNum);
-      } else if (operator === "*") {
-        firstNum = firstNum * secondNum;
-        entry.textContent = checkResult(firstNum);
-      } else if (operator === "÷") {
-        firstNum = firstNum / secondNum;
-        entry.textContent = checkResult(firstNum);
-      }
+      calculate(); //! Don't change the order
       secondNum = "";
       isFirstNum = false;
       isSecondNum = false;
-      // display();
       selectedOp(e.target);
       isOpSelected = true;
       sign.textContent = "";
@@ -230,7 +242,7 @@ pad.addEventListener("click", (e) => {
       equalPressed = true;
     }
   }
-  //* Clear
+  //* AC Clear
   else if (e.target.classList.contains("main__buttons--1")) {
     setDefaults();
   }
@@ -238,10 +250,10 @@ pad.addEventListener("click", (e) => {
   else if (e.target.classList.contains("main__buttons--2")) {
     entry.textContent && (entry.textContent = -1 * +entry.textContent);
   }
-
-  //* modulus
+  //*  Percent One
   else if (e.target.classList.contains("main__buttons--3")) {
     entry.textContent &&
+      entry.textContent !== "0" &&
       (entry.textContent = checkResult(+entry.textContent * 0.01));
   }
 });

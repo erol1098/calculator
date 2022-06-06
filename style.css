@@ -65,6 +65,10 @@
   background-color: #333333;
   color: whitesmoke;
 }
+.main__buttons--btn:active {
+  background-color: #a5a5a5;
+}
+
 .main__buttons--btn:hover {
   opacity: 0.6;
 }
@@ -87,9 +91,6 @@
   text-align: left;
   text-indent: 1.5rem;
 }
-/* .hidden {
-  display: none;
-} */
 .selected {
   background-color: #fff;
   color: #f1a33c;
