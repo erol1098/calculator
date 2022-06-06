@@ -1,16 +1,6 @@
 "use strict";
 //* Buttons
 const pad = document.querySelector(".main__buttons");
-// const btn1 = document.querySelector(".main__buttons--13");
-// const btn2 = document.querySelector(".main__buttons--14");
-// const btn3 = document.querySelector(".main__buttons--15");
-// const btn4 = document.querySelector(".main__buttons--9");
-// const btn5 = document.querySelector(".main__buttons--10");
-// const btn6 = document.querySelector(".main__buttons--11");
-// const btn7 = document.querySelector(".main__buttons--5");
-// const btn8 = document.querySelector(".main__buttons--6");
-// const btn9 = document.querySelector(".main__buttons--7");
-// const btn0 = document.querySelector(".main__buttons--17");
 const btnPlus = document.querySelector(".main__buttons--16");
 const btnMinus = document.querySelector(".main__buttons--12");
 const btnMultiply = document.querySelector(".main__buttons--8");
@@ -18,8 +8,6 @@ const btnDivide = document.querySelector(".main__buttons--4");
 const btnEqual = document.querySelector(".main__buttons--19");
 const btnAllClear = document.querySelector(".main__buttons--1");
 const btnClear = document.querySelector(".main__buttons--100");
-// const btnNegative = document.querySelector(".main__buttons--2");
-// const btnModulus = document.querySelector(".main__buttons--3");
 
 //* Screen
 const entry = document.querySelector(".main__screen__input--entry");
@@ -77,7 +65,7 @@ const takeFirstNumber = function (op) {
     !isFirstNum &&
     !isSecondNum &&
     entry.textContent !== "" &&
-    entry.textContent !== "."
+    entry.textContent !== "0."
   ) {
     firstNum = +entry.textContent;
     entry.textContent = "";
@@ -90,7 +78,7 @@ const takeFirstNumber = function (op) {
 
 //* Select Operator
 const selectedOp = function (op) {
-  if (!isOpSelected && entry.textContent !== ".") {
+  if (!isOpSelected && entry.textContent !== "0.") {
     btnPlus.classList.remove("selected");
     btnMinus.classList.remove("selected");
     btnMultiply.classList.remove("selected");
@@ -205,7 +193,7 @@ pad.addEventListener("click", (e) => {
     checkLength();
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
-    !dotDone ? (entry.textContent += ".") : dotDone;
+    !dotDone ? (entry.textContent += "0.") : dotDone;
     checkLength();
     dotDone = true;
   }
@@ -228,8 +216,7 @@ pad.addEventListener("click", (e) => {
   //* Equal
   else if (e.target.classList.contains("main__buttons--19")) {
     if (isFirstNum && !isSecondNum) {
-      (entry.textContent === 0 || entry.textContent) &&
-      entry.textContent !== "."
+      entry.textContent === 0 || entry.textContent
         ? (secondNum = +entry.textContent)
         : operator === "+"
         ? (secondNum = 0)
