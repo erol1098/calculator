@@ -117,12 +117,11 @@ const checkResult = function (number) {
     ? (output = number)
     : number > 999999999
     ? (output = number.toExponential(5))
-    : number < -0.00000001
+    : number < -999999999
     ? (output = number.toExponential(5))
-    : (output = +Number(number.toString())
-        .toPrecision(9)
-        .substring(0, 9)
-        .toString());
+    : number < 0 && number.toString().length > 10
+    ? (output = number.toExponential(5).toString())
+    : (output = number.toString().substring(0, 10));
   return output;
 };
 
@@ -263,7 +262,7 @@ pad.addEventListener("click", (e) => {
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
     entry.textContent &&
-      (entry.textContent = checkResult(-1 * +entry.textContent));
+      (entry.textContent = checkResult(-1 * entry.textContent));
   }
   //*  Percent One
   else if (e.target.classList.contains("main__buttons--3")) {
@@ -273,3 +272,5 @@ pad.addEventListener("click", (e) => {
   }
 });
 setDefaults();
+
+console.log();
