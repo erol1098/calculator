@@ -74,7 +74,8 @@
 }
 .main__buttons--1,
 .main__buttons--2,
-.main__buttons--3 {
+.main__buttons--3,
+.main__buttons--100 {
   background-color: #a5a5a5;
   color: #000;
 }
@@ -84,7 +85,6 @@
 .main__buttons--16 {
   background-color: #f1a33c;
 }
-
 .main__buttons--17 {
   width: 8.4rem;
   grid-column: 1 / span 2;

@@ -1,24 +1,25 @@
 "use strict";
 //* Buttons
 const pad = document.querySelector(".main__buttons");
-const btn1 = document.querySelector(".main__buttons--13");
-const btn2 = document.querySelector(".main__buttons--14");
-const btn3 = document.querySelector(".main__buttons--15");
-const btn4 = document.querySelector(".main__buttons--9");
-const btn5 = document.querySelector(".main__buttons--10");
-const btn6 = document.querySelector(".main__buttons--11");
-const btn7 = document.querySelector(".main__buttons--5");
-const btn8 = document.querySelector(".main__buttons--6");
-const btn9 = document.querySelector(".main__buttons--7");
-const btn0 = document.querySelector(".main__buttons--17");
+// const btn1 = document.querySelector(".main__buttons--13");
+// const btn2 = document.querySelector(".main__buttons--14");
+// const btn3 = document.querySelector(".main__buttons--15");
+// const btn4 = document.querySelector(".main__buttons--9");
+// const btn5 = document.querySelector(".main__buttons--10");
+// const btn6 = document.querySelector(".main__buttons--11");
+// const btn7 = document.querySelector(".main__buttons--5");
+// const btn8 = document.querySelector(".main__buttons--6");
+// const btn9 = document.querySelector(".main__buttons--7");
+// const btn0 = document.querySelector(".main__buttons--17");
 const btnPlus = document.querySelector(".main__buttons--16");
 const btnMinus = document.querySelector(".main__buttons--12");
 const btnMultiply = document.querySelector(".main__buttons--8");
 const btnDivide = document.querySelector(".main__buttons--4");
 const btnEqual = document.querySelector(".main__buttons--19");
-const btnClear = document.querySelector(".main__buttons--1");
-const btnNegative = document.querySelector(".main__buttons--2");
-const btnModulus = document.querySelector(".main__buttons--3");
+const btnAllClear = document.querySelector(".main__buttons--1");
+const btnClear = document.querySelector(".main__buttons--100");
+// const btnNegative = document.querySelector(".main__buttons--2");
+// const btnModulus = document.querySelector(".main__buttons--3");
 
 //* Screen
 const entry = document.querySelector(".main__screen__input--entry");
@@ -52,6 +53,8 @@ const setDefaults = function () {
   btnMinus.classList.remove("selected");
   btnMultiply.classList.remove("selected");
   btnDivide.classList.remove("selected");
+  btnClear.style.display = "none";
+  btnAllClear.style.display = "block";
 };
 
 //* Restrict the Length of User Input
@@ -70,7 +73,12 @@ const checkLength = function () {
 
 //* Take First Number
 const takeFirstNumber = function (op) {
-  if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
+  if (
+    !isFirstNum &&
+    !isSecondNum &&
+    entry.textContent !== "" &&
+    entry.textContent !== "."
+  ) {
     firstNum = +entry.textContent;
     entry.textContent = "";
     result.textContent = checkResult(firstNum);
@@ -82,7 +90,7 @@ const takeFirstNumber = function (op) {
 
 //* Select Operator
 const selectedOp = function (op) {
-  if (!isOpSelected) {
+  if (!isOpSelected && entry.textContent !== ".") {
     btnPlus.classList.remove("selected");
     btnMinus.classList.remove("selected");
     btnMultiply.classList.remove("selected");
@@ -101,6 +109,8 @@ const checkEqual = function () {
     equalPressed = false;
   }
   checkZero();
+  btnClear.style.display = "block";
+  btnAllClear.style.display = "none";
 };
 
 //* Check If Input Begins with Zero
@@ -127,7 +137,7 @@ const checkResult = function (number) {
 
 //* Do When a Calculus Operand is Pressed
 const calculusOp = function (target, operand) {
-  if (entry.textContent) {
+  if (firstNum || entry.textContent) {
     dotDone = false;
     equalPressed = false;
     operator = operand;
@@ -218,7 +228,8 @@ pad.addEventListener("click", (e) => {
   //* Equal
   else if (e.target.classList.contains("main__buttons--19")) {
     if (isFirstNum && !isSecondNum) {
-      entry.textContent === 0 || entry.textContent
+      (entry.textContent === 0 || entry.textContent) &&
+      entry.textContent !== "."
         ? (secondNum = +entry.textContent)
         : operator === "+"
         ? (secondNum = 0)
@@ -245,6 +256,15 @@ pad.addEventListener("click", (e) => {
   //* AC Clear
   else if (e.target.classList.contains("main__buttons--1")) {
     setDefaults();
+  }
+  //* C Clear
+  else if (e.target.classList.contains("main__buttons--100")) {
+    if (entry.textContent || entry.textContent === "0") {
+      entry.textContent = "";
+      e.target.style.display = "none";
+      btnAllClear.style.display = "block";
+      dotDone = false;
+    }
   }
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
