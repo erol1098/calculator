@@ -262,7 +262,8 @@ pad.addEventListener("click", (e) => {
   }
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
-    entry.textContent && (entry.textContent = -1 * +entry.textContent);
+    entry.textContent &&
+      (entry.textContent = checkResult(-1 * +entry.textContent));
   }
   //*  Percent One
   else if (e.target.classList.contains("main__buttons--3")) {
