@@ -116,10 +116,13 @@ const checkResult = function (number) {
   number === 0
     ? (output = number)
     : number > 999999999
-    ? (output = number.toExponential(4))
-    : number < 0.00000001
-    ? (output = number.toExponential(4))
-    : (output = Number(number.toString()).toPrecision(9).substring(0, 9));
+    ? (output = number.toExponential(5))
+    : number < -0.00000001
+    ? (output = number.toExponential(5))
+    : (output = +Number(number.toString())
+        .toPrecision(9)
+        .substring(0, 9)
+        .toString());
   return output;
 };
 
