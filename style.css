@@ -27,7 +27,7 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  font-size: 3rem;
+  font-size: 2.85rem;
   min-height: 4.2rem;
   position: relative;
 }
@@ -36,20 +36,21 @@
   justify-content: flex-end;
   width: 100%;
   min-height: 4.2rem;
-  font-size: 3rem;
+  font-size: 2.5rem;
+  color: #a5a5a5;
 }
 .main__screen__output--result {
   word-break: break-all;
   word-wrap: break-word;
-  padding-right: 5rem;
 }
 .main__screen__input--op {
   width: 1rem;
   height: 1rem;
   font-size: 1.8rem;
+  color: #a5a5a5;
   position: absolute;
   top: -3.3rem;
-  right: 3rem;
+  right: -1.5rem;
 }
 .main__buttons {
   display: grid;
@@ -86,9 +87,9 @@
   text-align: left;
   text-indent: 1.5rem;
 }
-.hidden {
-  /* display: none; */
-}
+/* .hidden {
+  display: none;
+} */
 .selected {
   background-color: #fff;
   color: #f1a33c;

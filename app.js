@@ -1,6 +1,5 @@
 "use strict";
 
-console.log(Math.log1p(999999999999));
 const pad = document.querySelector(".main__buttons");
 
 const btn1 = document.querySelector(".main__buttons--13");
@@ -37,15 +36,23 @@ let firstNum,
   isOpSelected,
   equalPressed;
 const checkLength = function () {
-  if (entry.textContent.length > 9) {
-    entry.textContent = entry.textContent.slice(0, 9);
+  let check;
+
+  entry.textContent[-1] === "."
+    ? (check = 9)
+      ? [...entry.textContent].includes(".")
+      : (check = 10)
+    : (check = 9);
+
+  if (entry.textContent.length > check) {
+    entry.textContent = entry.textContent.slice(0, `${check}`);
   }
-  document.querySelector(".main__screen__output").classList.add("hidden");
-  document.querySelector(".main__screen__input").classList.remove("hidden");
+  // document.querySelector(".main__screen__output").classList.add("hidden");
+  // document.querySelector(".main__screen__input").classList.remove("hidden");
 };
 const display = function () {
-  document.querySelector(".main__screen__output").classList.remove("hidden");
-  document.querySelector(".main__screen__input").classList.add("hidden");
+  // document.querySelector(".main__screen__output").classList.remove("hidden");
+  // document.querySelector(".main__screen__input").classList.add("hidden");
 };
 const setDefaults = function () {
   firstNum = "";
@@ -59,8 +66,8 @@ const setDefaults = function () {
   result.textContent = "";
   sign.textContent = "";
   equalPressed = false;
-  document.querySelector(".main__screen__output").classList.add("hidden");
-  document.querySelector(".main__screen__input").classList.remove("hidden");
+  // document.querySelector(".main__screen__output").classList.add("hidden");
+  // document.querySelector(".main__screen__input").classList.remove("hidden");
 };
 
 const takeFirstNumber = function (op) {
@@ -81,7 +88,6 @@ const selectedOp = function (op) {
     btnMultiply.classList.remove("selected");
     btnDivide.classList.remove("selected");
     sign.textContent = operator;
-    console.log(operator);
     if (!op.classList.contains("main__buttons--19")) {
       op.classList.add("selected");
     }
@@ -96,7 +102,16 @@ const checkEqual = function () {
 };
 
 const checkResult = function (number) {
-  return number > 999999999 ? number.toExponential(4) : number;
+  let output;
+  number > 999999999
+    ? (output = number.toExponential(4))
+    : number < 0.00000001
+    ? (output = number.toExponential(4))
+    : number.toString().length > 9
+    ? (output = [...number.toString()].slice(0, 9).join(""))
+    : (output = number);
+
+  return output;
 };
 
 pad.addEventListener("click", (e) => {
@@ -143,6 +158,7 @@ pad.addEventListener("click", (e) => {
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
     !dotDone ? (entry.textContent += ".") : dotDone;
+    checkLength();
     dotDone = true;
   }
   //* toplama
@@ -178,6 +194,14 @@ pad.addEventListener("click", (e) => {
     if (isFirstNum && !isSecondNum) {
       entry.textContent === 0 || entry.textContent
         ? (secondNum = +entry.textContent)
+        : operator === "+"
+        ? (secondNum = 0)
+        : operator === "-"
+        ? (secondNum = 0)
+        : operator === "*"
+        ? (secondNum = 1)
+        : operator === "÷"
+        ? (secondNum = 1)
         : secondNum;
       entry.textContent = "";
       dotDone = false;
@@ -198,7 +222,7 @@ pad.addEventListener("click", (e) => {
       secondNum = "";
       isFirstNum = false;
       isSecondNum = false;
-      display();
+      // display();
       selectedOp(e.target);
       isOpSelected = true;
       sign.textContent = "";
@@ -212,22 +236,13 @@ pad.addEventListener("click", (e) => {
   }
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
-    // entry.textContent
-    //   ? (entry.textContent = -1 * +entry.textContent)
-    //   : result.textContent
-    //   ? (result.textContent = -1 * +result.textContent)
-    //   : result;
     entry.textContent && (entry.textContent = -1 * +entry.textContent);
   }
 
   //* modulus
   else if (e.target.classList.contains("main__buttons--3")) {
-    // entry.textContent
-    //   ? (entry.textContent = 0.01 * +entry.textContent)
-    //   : result.textContent
-    //   ? (result.textContent = 0.01 * +result.textContent)
-    //   : result;
-    entry.textContent && (entry.textContent = +entry.textContent * 0.01);
+    entry.textContent &&
+      (entry.textContent = checkResult(+entry.textContent * 0.01));
   }
 });
 setDefaults();
