@@ -95,3 +95,6 @@
   background-color: #fff;
   color: #f1a33c;
 }
+.main__buttons--100 {
+display: none;
+}

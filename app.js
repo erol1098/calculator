@@ -1,5 +1,4 @@
 "use strict";
-console.log(Number(1e-18));
 //* Buttons
 const pad = document.querySelector(".main__buttons");
 const btnPlus = document.querySelector(".main__buttons--16");
@@ -11,266 +10,207 @@ const btnAllClear = document.querySelector(".main__buttons--1");
 const btnClear = document.querySelector(".main__buttons--100");
 
 //* Screen
-const entry = document.querySelector(".main__screen__input--entry");
-const result = document.querySelector(".main__screen__output--result");
+let entry = document.querySelector(".main__screen__input--entry");
+const secondary = document.querySelector(".main__screen__output--result");
 const sign = document.querySelector(".main__screen__input--op");
 
-//* Variables
-let firstNum,
-  secondNum,
-  realNumber,
-  isFirstNum,
-  isSecondNum,
-  operator,
-  dotDone,
-  isOpSelected,
-  equalPressed;
-let haveReal = false;
+let previousOperand = "";
+let currentOperand = "";
+let firstNum = "";
+let secondNum = "";
 
-//* Setting Program Defaults and AC Button
-const setDefaults = function () {
+function setOperand(operand) {
+  if (previousOperand === "" && entry.textContent !== "") {
+    previousOperand = operand;
+    firstNum = +entry.textContent;
+    secondary.textContent = `${firstNum} ${previousOperand}`;
+    entry.textContent = "";
+    switchClear();
+  } else if (previousOperand !== "" && entry.textContent === "") {
+    previousOperand = operand;
+    secondary.textContent = `${firstNum} ${previousOperand}`;
+  } else if (entry.textContent !== "" && !equalPressed) {
+    secondNum = +entry.textContent;
+    currentOperand = operand;
+    firstNum = calculate(previousOperand);
+    secondary.textContent = `${firstNum} ${currentOperand}`;
+    entry.textContent = "";
+    secondNum = "";
+    previousOperand = operand;
+    switchClear();
+  } else if (entry.textContent !== "" && equalPressed) {
+    previousOperand = operand;
+    firstNum = +entry.textContent;
+    secondNum = "";
+    secondary.textContent = `${formatNumber(firstNum)} ${previousOperand}`;
+    entry.textContent = "";
+    equalPressed = false;
+    switchClear();
+  }
+}
+
+let temp;
+let equalPressed = false;
+function equal() {
+  if (firstNum !== "" && entry.textContent !== "") {
+    if (secondNum === "") {
+      secondNum = +entry.textContent;
+      temp = +entry.textContent;
+    } else if (secondNum !== "") {
+      secondNum = temp;
+    }
+    firstNum = calculate(previousOperand);
+    entry.textContent = formatNumber(firstNum);
+    secondary.textContent = "";
+    equalPressed = true;
+  }
+}
+
+function enterNumber(number) {
+  entry.textContent.length < 10 ? (entry.textContent += number) : null;
+  btnClear.style.display = "block";
+  btnAllClear.style.display = "none";
+}
+
+function checkEqual() {
+  entry.textContent === "0" ? (entry.textContent = "") : entry;
+  if (equalPressed) {
+    entry.textContent = "";
+    firstNum = previousOperand = secondNum = "";
+    removedOp();
+    equalPressed = false;
+  }
+}
+
+function calculate(operand) {
+  switch (operand) {
+    case "+":
+      return firstNum + secondNum;
+      break;
+    case "-":
+      return firstNum - secondNum;
+      break;
+    case "*":
+      return firstNum * secondNum;
+      break;
+    case "÷":
+      return firstNum / secondNum;
+      break;
+  }
+}
+function clearAll() {
+  entry.textContent = "";
+  secondary.textContent = "";
   firstNum = "";
   secondNum = "";
-  realNumber = "";
-  isFirstNum = false;
-  isSecondNum = false;
-  operator = "";
-  dotDone = false;
-  isOpSelected = false;
-  equalPressed = false;
-  entry.textContent = 0;
-  result.textContent = "";
-  sign.textContent = "";
+  previousOperand = "";
+  currentOperand = "";
+  removedOp();
+}
+
+function removedOp() {
   btnPlus.classList.remove("selected");
   btnMinus.classList.remove("selected");
   btnMultiply.classList.remove("selected");
   btnDivide.classList.remove("selected");
+}
+function selectedOp(target) {
+  firstNum !== "" && target.classList.add("selected");
+}
+
+function formatNumber(number) {
+  return number.toString().length > 10 ? number.toExponential(5) : number;
+}
+
+function switchClear() {
   btnClear.style.display = "none";
   btnAllClear.style.display = "block";
-};
-
-//* Restrict the Length of User Input
-const checkLength = function () {
-  let check;
-  entry.textContent[-1] === "."
-    ? (check = 9)
-      ? [...entry.textContent].includes(".")
-      : (check = 10)
-    : (check = 9);
-
-  if (entry.textContent.length > check) {
-    entry.textContent = entry.textContent.slice(0, `${check}`);
-  }
-};
-
-//* Take First Number
-const takeFirstNumber = function (op) {
-  if (!isFirstNum && !isSecondNum && entry.textContent !== "") {
-    firstNum = +entry.textContent;
-    entry.textContent = "";
-    result.textContent = checkResult(firstNum);
-    isFirstNum = true;
-    isOpSelected = false;
-    btnClear.style.display = "none";
-    btnAllClear.style.display = "block";
-  }
-  selectedOp(op);
-};
-
-//* Select Operator
-const selectedOp = function (op) {
-  if (!isOpSelected && entry.textContent !== "0.") {
-    btnPlus.classList.remove("selected");
-    btnMinus.classList.remove("selected");
-    btnMultiply.classList.remove("selected");
-    btnDivide.classList.remove("selected");
-    sign.textContent = operator;
-    if (!op.classList.contains("main__buttons--19")) {
-      op.classList.add("selected");
-    }
-  }
-};
-
-//* Check If Equal Button Pressed
-const checkEqual = function () {
-  if (equalPressed) {
-    entry.textContent = "";
-    equalPressed = false;
-  }
-  checkZero();
-  btnClear.style.display = "block";
-  btnAllClear.style.display = "none";
-};
-
-//* Check If Input Begins with Zero
-const checkZero = function () {
-  entry.textContent.charAt(0) === "0" &&
-  entry.textContent.substring(0, 2) !== "0."
-    ? (entry.textContent = entry.textContent.substring(1))
-    : null;
-};
-
-//* Check Result's Length and Implement Exponential If Required
-const checkResult = function (number) {
-  let output;
-  number === 0
-    ? (output = number)
-    : number > 999999999
-    ? (output = number.toExponential(5))
-    : number < -999999999
-    ? (output = number.toExponential(5))
-    : number < 0 && number.toString().length > 10
-    ? (output = number.toExponential(5).toString())
-    : (output = number.toString().substring(0, 10));
-  return output;
-};
-
-//* Do When a Calculus Operand is Pressed
-const calculusOp = function (target, operand) {
-  if (firstNum || entry.textContent) {
-    dotDone = false;
-    equalPressed = false;
-    operator = operand;
-    takeFirstNumber(target);
-  }
-};
-
-//* Calculation
-const calculate = function () {
-  if (operator === "+") {
-    firstNum = firstNum + secondNum;
-    entry.textContent = checkResult(firstNum);
-  } else if (operator === "-") {
-    firstNum = firstNum - secondNum;
-    entry.textContent = checkResult(firstNum);
-  } else if (operator === "*") {
-    firstNum = firstNum * secondNum;
-    entry.textContent = checkResult(firstNum);
-  } else if (operator === "÷") {
-    firstNum = firstNum / secondNum;
-    entry.textContent = checkResult(firstNum);
-  }
-};
+}
 
 pad.addEventListener("click", (e) => {
   if (e.target.classList.contains("main__buttons--13")) {
     checkEqual();
-    entry.textContent += "1";
-    checkLength();
+    enterNumber("1");
   } else if (e.target.classList.contains("main__buttons--14")) {
     checkEqual();
-    entry.textContent += "2";
-    checkLength();
+    enterNumber("2");
   } else if (e.target.classList.contains("main__buttons--15")) {
     checkEqual();
-    entry.textContent += "3";
-    checkLength();
+    enterNumber("3");
   } else if (e.target.classList.contains("main__buttons--9")) {
     checkEqual();
-    entry.textContent += "4";
-    checkLength();
+    enterNumber("4");
   } else if (e.target.classList.contains("main__buttons--10")) {
     checkEqual();
-    entry.textContent += "5";
-    checkLength();
+    enterNumber("5");
   } else if (e.target.classList.contains("main__buttons--11")) {
     checkEqual();
-    entry.textContent += "6";
-    checkLength();
+    enterNumber("6");
   } else if (e.target.classList.contains("main__buttons--5")) {
     checkEqual();
-    entry.textContent += "7";
-    checkLength();
+    enterNumber("7");
   } else if (e.target.classList.contains("main__buttons--6")) {
     checkEqual();
-    entry.textContent += "8";
-    checkLength();
+    enterNumber("8");
   } else if (e.target.classList.contains("main__buttons--7")) {
     checkEqual();
-    entry.textContent += "9";
-    checkLength();
+    enterNumber("9");
   } else if (e.target.classList.contains("main__buttons--17")) {
     checkEqual();
-    entry.textContent !== "0" ? (entry.textContent += "0") : entry.textContent;
-    checkLength();
+    enterNumber("0");
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
-    !dotDone
-      ? entry.textContent === ""
-        ? (entry.textContent = "0.")
-        : (entry.textContent += ".")
-      : dotDone;
-    checkLength();
-    dotDone = true;
+    if (entry.textContent.length < 9) {
+      entry.textContent == "" ? (entry.textContent += "0.") : entry;
+    }
+    !entry.textContent.includes(".") ? (entry.textContent += ".") : entry;
   }
   //* Addition
   else if (e.target.classList.contains("main__buttons--16")) {
-    calculusOp(e.target, "+");
+    setOperand("+");
+    removedOp();
+    selectedOp(e.target);
   }
   //* Substraction
   else if (e.target.classList.contains("main__buttons--12")) {
-    calculusOp(e.target, "-");
+    setOperand("-");
+    removedOp();
+    selectedOp(e.target);
   }
   //* Multiplication
   else if (e.target.classList.contains("main__buttons--8")) {
-    calculusOp(e.target, "*");
+    setOperand("*");
+    removedOp();
+    selectedOp(e.target);
   }
   //* Division
   else if (e.target.classList.contains("main__buttons--4")) {
-    calculusOp(e.target, "÷");
+    setOperand("÷");
+    removedOp();
+    selectedOp(e.target);
   }
   //* Equal
   else if (e.target.classList.contains("main__buttons--19")) {
-    if (isFirstNum && !isSecondNum) {
-      entry.textContent === 0 || entry.textContent
-        ? (secondNum = +entry.textContent)
-        : operator === "+"
-        ? (secondNum = 0)
-        : operator === "-"
-        ? (secondNum = 0)
-        : operator === "*"
-        ? (secondNum = 1)
-        : operator === "÷"
-        ? (secondNum = 1)
-        : secondNum;
-      entry.textContent = "";
-      dotDone = false;
-      calculate(); //! Don't change the order
-      secondNum = "";
-      isFirstNum = false;
-      isSecondNum = false;
-      selectedOp(e.target);
-      isOpSelected = true;
-      sign.textContent = "";
-      result.textContent = "";
-      equalPressed = true;
-    }
+    equal();
   }
   //* AC Clear
   else if (e.target.classList.contains("main__buttons--1")) {
-    setDefaults();
+    clearAll();
   }
   //* C Clear
   else if (e.target.classList.contains("main__buttons--100")) {
-    if (entry.textContent || entry.textContent === "0") {
-      entry.textContent = "0";
-      e.target.style.display = "none";
-      btnAllClear.style.display = "block";
-      dotDone = false;
-    }
+    entry.textContent = "";
+    switchClear();
   }
+
   //* Minus
   else if (e.target.classList.contains("main__buttons--2")) {
-    entry.textContent &&
-      (entry.textContent = checkResult(-1 * entry.textContent));
+    entry.textContent ? (entry.textContent = +entry.textContent * -1) : entry;
   }
   //*  Percent One
   else if (e.target.classList.contains("main__buttons--3")) {
-    entry.textContent &&
-      entry.textContent !== "0" &&
-      (entry.textContent = checkResult(+entry.textContent * 0.01));
+    entry.textContent
+      ? (entry.textContent = formatNumber(+entry.textContent / 100))
+      : entry;
   }
 });
-setDefaults();
-
-console.log();
