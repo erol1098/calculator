@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: sans-serif;
+  user-select: none;
 }
 .container {
   display: grid;
@@ -96,5 +97,5 @@
   color: #f1a33c;
 }
 .main__buttons--100 {
-display: none;
+  display: none;
 }

@@ -48,7 +48,6 @@ function setOperand(operand) {
     switchClear();
   }
 }
-
 let temp;
 let equalPressed = false;
 function equal() {
@@ -65,13 +64,11 @@ function equal() {
     equalPressed = true;
   }
 }
-
-function enterNumber(number) {
+function appendNumber(number) {
   entry.textContent.length < 10 ? (entry.textContent += number) : null;
   btnClear.style.display = "block";
   btnAllClear.style.display = "none";
 }
-
 function checkEqual() {
   entry.textContent === "0" ? (entry.textContent = "") : entry;
   if (equalPressed) {
@@ -81,7 +78,6 @@ function checkEqual() {
     equalPressed = false;
   }
 }
-
 function calculate(operand) {
   switch (operand) {
     case "+":
@@ -90,11 +86,17 @@ function calculate(operand) {
     case "-":
       return firstNum - secondNum;
       break;
-    case "*":
+    case "x":
       return firstNum * secondNum;
       break;
     case "÷":
       return firstNum / secondNum;
+      break;
+    case "%":
+      return firstNum / 100;
+      break;
+    case "±":
+      return firstNum * -1;
       break;
   }
 }
@@ -107,7 +109,6 @@ function clearAll() {
   currentOperand = "";
   removedOp();
 }
-
 function removedOp() {
   btnPlus.classList.remove("selected");
   btnMinus.classList.remove("selected");
@@ -128,36 +129,10 @@ function switchClear() {
 }
 
 pad.addEventListener("click", (e) => {
-  if (e.target.classList.contains("main__buttons--13")) {
+  //* Numbers
+  if (e.target.classList.contains("num")) {
     checkEqual();
-    enterNumber("1");
-  } else if (e.target.classList.contains("main__buttons--14")) {
-    checkEqual();
-    enterNumber("2");
-  } else if (e.target.classList.contains("main__buttons--15")) {
-    checkEqual();
-    enterNumber("3");
-  } else if (e.target.classList.contains("main__buttons--9")) {
-    checkEqual();
-    enterNumber("4");
-  } else if (e.target.classList.contains("main__buttons--10")) {
-    checkEqual();
-    enterNumber("5");
-  } else if (e.target.classList.contains("main__buttons--11")) {
-    checkEqual();
-    enterNumber("6");
-  } else if (e.target.classList.contains("main__buttons--5")) {
-    checkEqual();
-    enterNumber("7");
-  } else if (e.target.classList.contains("main__buttons--6")) {
-    checkEqual();
-    enterNumber("8");
-  } else if (e.target.classList.contains("main__buttons--7")) {
-    checkEqual();
-    enterNumber("9");
-  } else if (e.target.classList.contains("main__buttons--17")) {
-    checkEqual();
-    enterNumber("0");
+    appendNumber(e.target.textContent);
   } else if (e.target.classList.contains("main__buttons--18")) {
     checkEqual();
     if (entry.textContent.length < 9) {
@@ -165,27 +140,9 @@ pad.addEventListener("click", (e) => {
     }
     !entry.textContent.includes(".") ? (entry.textContent += ".") : entry;
   }
-  //* Addition
-  else if (e.target.classList.contains("main__buttons--16")) {
-    setOperand("+");
-    removedOp();
-    selectedOp(e.target);
-  }
-  //* Substraction
-  else if (e.target.classList.contains("main__buttons--12")) {
-    setOperand("-");
-    removedOp();
-    selectedOp(e.target);
-  }
-  //* Multiplication
-  else if (e.target.classList.contains("main__buttons--8")) {
-    setOperand("*");
-    removedOp();
-    selectedOp(e.target);
-  }
-  //* Division
-  else if (e.target.classList.contains("main__buttons--4")) {
-    setOperand("÷");
+  //* +, -, x, ÷ Operands
+  else if (e.target.classList.contains("operand")) {
+    setOperand(e.target.textContent);
     removedOp();
     selectedOp(e.target);
   }
@@ -202,15 +159,11 @@ pad.addEventListener("click", (e) => {
     entry.textContent = "";
     switchClear();
   }
-
-  //* Minus
-  else if (e.target.classList.contains("main__buttons--2")) {
-    entry.textContent ? (entry.textContent = +entry.textContent * -1) : entry;
-  }
-  //*  Percent One
-  else if (e.target.classList.contains("main__buttons--3")) {
-    entry.textContent
-      ? (entry.textContent = formatNumber(+entry.textContent / 100))
-      : entry;
+  //* ± and %
+  else if (e.target.classList.contains("otherOps")) {
+    if (entry.textContent) {
+      firstNum = entry.textContent;
+      entry.textContent = calculate(e.target.textContent);
+    }
   }
 });
