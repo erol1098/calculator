@@ -18,7 +18,7 @@ let previousOperand = "";
 let currentOperand = "";
 let firstNum = "";
 let secondNum = "";
-
+let percentPressed = false;
 function setOperand(operand) {
   if (previousOperand === "" && entry.textContent !== "") {
     previousOperand = operand;
@@ -76,6 +76,10 @@ function checkEqual() {
     firstNum = previousOperand = secondNum = "";
     removedOp();
     equalPressed = false;
+  }
+  if (percentPressed) {
+    entry.textContent = "";
+    percentPressed = false;
   }
 }
 function calculate(operand) {
@@ -165,5 +169,8 @@ pad.addEventListener("click", (e) => {
       firstNum = entry.textContent;
       entry.textContent = calculate(e.target.textContent);
     }
+    e.target.classList.contains("main__buttons--3")
+      ? (percentPressed = true)
+      : percentPressed;
   }
 });
